@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Restaurant System</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+<style>
+  :root{ --paper:#FAF6EE; --charcoal:#211F1C; --paprika:#C1440E; --herb:#2F5233; --stone:#8A8578; --line:#E4DDC9; --card:#FFFFFF; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--charcoal); font-family:system-ui,-apple-system,sans-serif; padding:40px 20px;}
+  .wrap{max-width:720px; margin:0 auto;}
+  h1{font-size:26px; margin-bottom:4px;}
+  p.sub{color:var(--stone); margin-top:0;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px;}
+  a.card{display:block; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; text-decoration:none; color:var(--charcoal);}
+  a.card:hover{border-color:var(--paprika);}
+  a.card .emoji{font-size:28px;}
+  a.card h3{margin:10px 0 4px; font-size:16px;}
+  a.card p{margin:0; font-size:13px; color:var(--stone);}
+  .note{margin-top:30px; padding:14px 16px; background:#FFF3CD; border-radius:8px; font-size:13px; color:#856404;}
+  .btn-scan{display:block; width:100%; background:var(--paprika); color:#fff; border:none; border-radius:10px; padding:14px; font-weight:600; font-size:15px; cursor:pointer; margin-top:24px;}
+  .scan-overlay{position:fixed; inset:0; background:#000; display:none; align-items:center; justify-content:center; flex-direction:column; z-index:100;}
+  .scan-overlay.show{display:flex;}
+  .scan-overlay video{width:100%; max-width:420px; border-radius:12px;}
+  .scan-overlay .close-scan{position:absolute; top:16px; right:16px; background:rgba(255,255,255,.15); color:#fff; border:none; border-radius:8px; padding:10px 14px; font-size:14px; cursor:pointer;}
+  .scan-overlay p{color:#fff; margin-top:14px; font-size:13px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>QR Restaurant System</h1>
+  <p class="sub">Demo build — matches the workflow diagram end to end.</p>
+
+  <div class="grid">
+    <a class="card" href="/customer.html">
+      <div class="emoji">📱</div>
+      <h3>Customer</h3>
+      <p>Scan a table, order, pay now or later, call the waiter.</p>
+    </a>
+    <a class="card" href="/kitchen.html">
+      <div class="emoji">👨‍🍳</div>
+      <h3>Kitchen Display</h3>
+      <p>Accept, reject, and mark orders ready.</p>
+    </a>
+    <a class="card" href="/waiter.html">
+      <div class="emoji">🧑‍🍳</div>
+      <h3>Waiter Panel</h3>
+      <p>Deliver food, handle calls, collect payment.</p>
+    </a>
+    <a class="card" href="/manager.html">
+      <div class="emoji">📊</div>
+      <h3>Manager Dashboard</h3>
+      <p>Edit menu, view bills, override sessions, resolve disputes.</p>
+    </a>
+  </div>
+
+  <div class="note">
+    <strong>Tip:</strong> open Customer, Kitchen, and Waiter in three separate tabs to watch an order flow through the whole system live. Use different browser profiles (or incognito windows) if you want to simulate two different customer devices scanning the same table.
+  </div>
+
+  <button class="btn-scan" id="open-scan-btn">📷 Scan a Table's QR Code</button>
+</div>
+
+<div class="scan-overlay" id="scan-overlay">
+  <button class="close-scan" id="close-scan-btn">✕ Close</button>
+  <video id="scan-video" playsinline></video>
+  <p id="scan-status">Point your camera at a table's QR code...</p>
+  <p style="color:#ccc;font-size:12px;max-width:340px;text-align:center;">Tip: hold the QR code 15–25cm away, fill the frame, and make sure your phone screen brightness is turned up. Laptop webcams are often low-res and struggle up close.</p>
+  <div style="margin-top:16px;display:flex;gap:8px;align-items:center;">
+    <input id="manual-token-input" placeholder="Or type table code, e.g. table-token-1" style="padding:10px;border-radius:8px;border:none;width:240px;">
+    <button id="manual-token-btn" style="padding:10px 14px;border:none;border-radius:8px;background:var(--paprika);color:#fff;font-weight:600;cursor:pointer;">Go</button>
+  </div>
+</div>
+<canvas id="scan-canvas" style="display:none;"></canvas>
+
+<script>
+  const scanOverlay = document.getElementById('scan-overlay');
+  const video = document.getElementById('scan-video');
+  const canvas = document.getElementById('scan-canvas');
+  const ctx = canvas.getContext('2d');
+  const statusEl = document.getElementById('scan-status');
+  let stream = null, scanning = false;
+
+  document.getElementById('open-scan-btn').onclick = async () => {
+    scanOverlay.classList.add('show');
+    const detectorNote = barcodeDetector ? '' : ' (using fallback scanner — try Chrome or Edge for the more reliable native scanner)';
+    statusEl.textContent = 'Point your camera at a table\'s QR code...' + detectorNote;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+      });
+      video.srcObject = stream;
+      await video.play();
+      scanning = true;
+      requestAnimationFrame(tick);
+    } catch (e) {
+      statusEl.textContent = 'Camera access denied or unavailable: ' + e.message;
+    }
+  };
+
+  document.getElementById('close-scan-btn').onclick = stopScan;
+  document.getElementById('manual-token-btn').onclick = () => {
+    const token = document.getElementById('manual-token-input').value.trim();
+    if(token){ stopScan(); window.location.href = '/customer.html?table=' + encodeURIComponent(token); }
+  };
+  function stopScan(){
+    scanning = false;
+    scanOverlay.classList.remove('show');
+    if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
+  }
+
+  let barcodeDetector = null;
+  if('BarcodeDetector' in window){
+    try{ barcodeDetector = new BarcodeDetector({ formats: ['qr_code'] }); }
+    catch(e){ barcodeDetector = null; }
+  }
+
+  async function detectCode(){
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Prefer the browser's own native decoder - it's hardware-accelerated and
+    // far more tolerant of blur/glare/angle than a pure-JS pixel scan like
+    // jsQR. Supported in Chrome/Edge on desktop and Android; falls back to
+    // jsQR everywhere else (e.g. Safari).
+    if(barcodeDetector){
+      try{
+        const codes = await barcodeDetector.detect(canvas);
+        if(codes && codes.length) return codes[0].rawValue;
+        return null;
+      }catch(e){ /* fall through to jsQR below */ }
+    }
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height);
+    return code ? code.data : null;
+  }
+
+  async function tick(){
+    if(!scanning) return;
+    if(video.readyState === video.HAVE_ENOUGH_DATA){
+      const data = await detectCode();
+      if(data){
+        statusEl.textContent = 'Found it! Redirecting...';
+        stopScan();
+        try {
+          const url = new URL(data);
+          window.location.href = url.pathname + url.search; // same-origin navigate
+        } catch(e) {
+          window.location.href = data; // fallback if it wasn't a full URL
+        }
+        return;
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+</script>
+</body>
+</html>

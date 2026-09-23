@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order — QR Restaurant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6EE; --charcoal:#211F1C; --paprika:#C1440E; --paprika-dark:#9E370A;
+    --herb:#2F5233; --herb-dark:#25401F; --stone:#8A8578; --line:#E4DDC9; --card:#FFFFFF;
+    --shadow-sm:0 1px 3px rgba(33,31,28,.06); --shadow-md:0 4px 18px rgba(33,31,28,.09);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--charcoal); padding-bottom:110px;
+    font-family:'Inter',-apple-system,sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  header{background:var(--charcoal); color:var(--paper); padding:20px 22px 22px; position:relative;}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:8px;background:radial-gradient(circle at 7px 0,transparent 7px,var(--charcoal) 7.5px) repeat-x;background-size:14px 14px;}
+  header h1{margin:0; font-size:22px; font-weight:600; letter-spacing:-.01em;}
+  header .sub{font-size:11.5px; opacity:.65; margin-top:5px;}
+
+  main{max-width:640px; margin:0 auto; padding:24px 16px 16px;}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; box-shadow:var(--shadow-sm); transition:box-shadow .15s ease;}
+  .row{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+
+  .btn{background:var(--charcoal); color:var(--paper); border:none; border-radius:10px; padding:11px 18px; font-weight:600; cursor:pointer; font-size:14px; font-family:'Inter',sans-serif; transition:transform .1s ease, opacity .15s ease;}
+  .btn:active{transform:scale(.97);}
+  .btn.secondary{background:none; border:1px solid var(--line); color:var(--charcoal);}
+  .btn.paprika{background:var(--paprika); color:#fff;}
+  .btn.paprika:hover{background:var(--paprika-dark);}
+  .btn.herb{background:var(--herb); color:#fff;}
+  .btn.herb:hover{background:var(--herb-dark);}
+  .btn:disabled{opacity:.45; cursor:not-allowed; transform:none;}
+  .btn.small{padding:7px 12px; font-size:12.5px; border-radius:8px;}
+  .btn.full{width:100%;}
+
+  input,select{padding:10px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:'Inter',sans-serif; background:var(--paper);}
+  input:focus,select:focus{outline:2px solid var(--charcoal); outline-offset:1px;}
+
+  .badge{display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600;}
+  .badge.placed{background:#FFF3CD; color:#856404;}
+  .badge.accepted{background:#D1ECF1; color:#0C5460;}
+  .badge.ready{background:#D4EDDA; color:#155724;}
+  .badge.served{background:#E2E3E5; color:#383D41;}
+  .badge.rejected{background:#F8D7DA; color:#721C24;}
+
+  .price{font-family:'IBM Plex Mono',monospace; color:var(--paprika); font-weight:600;}
+
+  .qty-stepper{display:flex; align-items:center; gap:0; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .qty-btn{width:32px; height:32px; border:none; background:var(--paper); cursor:pointer; font-size:16px; font-family:'IBM Plex Mono',monospace; color:var(--charcoal); display:flex; align-items:center; justify-content:center;}
+  .qty-btn:active{background:var(--line);}
+  .qty-value{width:28px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600;}
+
+  .section-title{margin:26px 0 12px; font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--stone); font-weight:600; font-family:'Inter',sans-serif;}
+  .section-title:first-child{margin-top:0;}
+
+  #table-picker{padding:60px 20px; text-align:center;}
+  #table-picker p{color:var(--stone); font-size:14px;}
+  #table-buttons{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:18px;}
+  #table-buttons button{padding:14px 22px; border-radius:10px;}
+
+  .modal-overlay{position:fixed; inset:0; background:rgba(20,18,15,.55); display:none; align-items:flex-end; justify-content:center; z-index:50; padding:0;}
+  .modal-overlay.show{display:flex;}
+  .modal{background:var(--card); border-radius:18px 18px 0 0; padding:24px 22px 30px; max-width:480px; width:100%; max-height:85vh; overflow-y:auto; animation:slideUp .22s ease;}
+  @keyframes slideUp{from{transform:translateY(24px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .modal h3{margin:0 0 4px; font-size:19px; font-weight:600;}
+
+  .toast{position:fixed; top:16px; left:50%; transform:translateX(-50%); background:var(--charcoal); color:var(--paper); padding:11px 20px; border-radius:22px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:60;}
+  .toast.show{opacity:1;}
+
+  .cat-tabs{display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:14px; -webkit-overflow-scrolling:touch;}
+  .cat-tabs::-webkit-scrollbar{display:none;}
+  .cat-tab{flex-shrink:0; padding:9px 17px; border-radius:20px; border:1px solid var(--line); background:var(--card); font-size:13px; font-weight:600; cursor:pointer; color:var(--charcoal); white-space:nowrap; font-family:'Inter',sans-serif;}
+  .cat-tab.active{background:var(--charcoal); color:var(--paper); border-color:var(--charcoal);}
+
+  .menu-item{cursor:default;}
+  .menu-item:hover{box-shadow:var(--shadow-md);}
+  .menu-item-name{font-family:'Fraunces',serif; font-weight:600; font-size:16.5px;}
+  .menu-item-desc{font-size:12.5px; color:var(--stone); margin-top:3px; max-width:360px; line-height:1.4;}
+
+  /* ---- The always-visible "Your Order" cart card ---- */
+  #your-order-card{border:2px solid var(--charcoal); padding:0; overflow:hidden;}
+  #your-order-card .yo-header{background:var(--charcoal); color:var(--paper); padding:13px 16px; display:flex; justify-content:space-between; align-items:center;}
+  #your-order-card .yo-header strong{font-family:'Fraunces',serif; font-size:15px; font-weight:600;}
+  #your-order-body{padding:14px 16px;}
+  .yo-line{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed var(--line); gap:10px;}
+  .yo-line:last-of-type{border-bottom:none;}
+  .yo-line-name{font-size:13.5px; flex:1;}
+  .yo-empty{text-align:center; color:var(--stone); font-size:13px; padding:18px 0;}
+  .yo-total-row{display:flex; justify-content:space-between; align-items:center; padding-top:12px; margin-top:8px; border-top:1px solid var(--line); font-weight:600; font-size:15px;}
+
+  /* ---- Sticky "jump to order" bar, shown only when cart has items ---- */
+  #cart-bar{position:fixed; left:0; right:0; bottom:0; background:var(--charcoal); color:var(--paper); padding:13px 20px; display:none; justify-content:space-between; align-items:center; box-shadow:0 -6px 20px rgba(0,0,0,.18);}
+  #cart-bar.show{display:flex;}
+  #cart-bar .cb-info{display:flex; flex-direction:column; gap:1px;}
+  #cart-bar .cb-count{font-size:11px; opacity:.7;}
+  #cart-bar .cb-total{font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:600;}
+
+  .section{display:none;} .section.active{display:block;}
+  .payment-tag{font-size:11.5px; color:var(--stone); margin-top:4px;}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<header>
+  <h1>QR Restaurant</h1>
+  <div class="sub mono" id="status-line">Not connected</div>
+</header>
+
+<main>
+
+  <!-- Table picker: stands in for "scan the QR code" since we don't have a physical printer -->
+  <div id="table-picker">
+    <p>Simulate scanning a table's QR code:</p>
+    <div id="table-buttons"></div>
+    <p style="font-size:12px;color:var(--stone);margin-top:26px;max-width:380px;margin-left:auto;margin-right:auto;">Each browser tab/profile you open here acts as a separate customer device — per the workflow, each device gets its own independent bill even at the same table.</p>
+  </div>
+
+  <!-- Main app, shown once a table is selected -->
+  <div id="app" class="section">
+
+    <div class="card row">
+      <div>
+        <strong class="display" id="table-label"></strong>
+        <div style="font-size:11.5px;color:var(--stone);" class="mono">Session <span id="session-short"></span></div>
+      </div>
+      <button class="btn secondary small" id="new-device-btn">New device</button>
+    </div>
+
+    <div class="card row">
+      <span style="font-size:13.5px;">Need something?</span>
+      <button class="btn secondary small" id="call-waiter-btn">🔔 Call Waiter</button>
+    </div>
+
+    <div class="section-title">Menu</div>
+    <div class="cat-tabs" id="cat-tabs"></div>
+    <div id="menu-list"></div>
+
+    <!-- Persistent, always-visible cart card -->
+    <div class="section-title">Your Order</div>
+    <div class="card" id="your-order-card">
+      <div class="yo-header">
+        <strong>🧾 Current Order</strong>
+        <span class="mono" id="yo-count" style="font-size:12px;opacity:.75;">0 items</span>
+      </div>
+      <div id="your-order-body">
+        <div class="yo-empty">Add something from the menu above to get started.</div>
+      </div>
+    </div>
+
+    <div class="section-title">Order Status</div>
+    <div id="orders-list"><p style="color:var(--stone);font-size:13px;">No orders placed yet.</p></div>
+
+    <div class="card" id="bill-section" style="display:none;"></div>
+
+  </div>
+
+</main>
+
+<div id="cart-bar">
+  <div class="cb-info">
+    <span class="cb-count" id="cart-count">0 items</span>
+    <span class="cb-total mono" id="cart-total">₹0</span>
+  </div>
+  <button class="btn paprika" id="jump-to-order-btn">View Order ↓</button>
+</div>
+
+<!-- Phone number + party size gate - shown once per new session, right after scan -->
+<div class="modal-overlay" id="phone-overlay">
+  <div class="modal">
+    <h3>Welcome! A couple of quick details</h3>
+    <p style="font-size:13px;color:var(--stone);margin-top:4px;">We use this to keep your bill with you, reach you if needed, and so you can collect your bill from the counter by phone number. No OTP required for this demo.</p>
+    <label style="font-size:12px;color:var(--stone);">Mobile number</label>
+    <input type="tel" id="phone-input" placeholder="10-digit mobile number" style="width:100%;margin:4px 0 10px;" maxlength="10">
+    <label style="font-size:12px;color:var(--stone);">Number of members</label>
+    <input type="number" id="party-size-input" placeholder="e.g. 3" min="1" max="30" style="width:100%;margin:4px 0 10px;">
+    <div id="phone-error" style="color:var(--paprika);font-size:12px;margin-bottom:10px;display:none;"></div>
+    <button class="btn paprika full" id="phone-submit-btn">Continue to Menu</button>
+  </div>
+</div>
+
+<!-- Recommendation modal -->
+<div class="modal-overlay" id="reco-overlay">
+  <div class="modal">
+    <h3>Goes well with your dish</h3>
+    <div id="reco-list" style="margin-top:10px;"></div>
+    <button class="btn secondary full" style="margin-top:12px;" id="reco-close-btn">No thanks, continue</button>
+  </div>
+</div>
+
+<!-- Pay now / pay later modal - shown only when the customer places their first order -->
+<div class="modal-overlay" id="pay-timing-overlay">
+  <div class="modal">
+    <h3>How would you like to pay?</h3>
+    <p style="font-size:13px;color:var(--stone);margin-top:4px;">You can keep ordering either way — this just tells staff how you'd like to settle up.</p>
+    <button class="btn herb full" style="margin-bottom:8px;margin-top:10px;" id="pay-now-choice-btn">Pay Now</button>
+    <button class="btn secondary full" id="pay-later-choice-btn">Pay Later</button>
+  </div>
+</div>
+
+<!-- Choose payment method modal -->
+<div class="modal-overlay" id="pay-method-overlay">
+  <div class="modal">
+    <h3>Choose payment method</h3>
+    <div id="pay-method-total" class="row" style="font-weight:600;margin:14px 0;"><span>Amount due</span><span class="price"></span></div>
+    <button class="btn herb full" style="margin-bottom:8px;" id="pay-upi-btn">Pay via UPI</button>
+    <button class="btn secondary full" style="margin-bottom:8px;" id="pay-card-btn">Pay by Card (at table)</button>
+    <button class="btn secondary full" id="pay-cash-btn">Pay by Cash (at table)</button>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+function money(n){ return '₹'+Number(n).toFixed(0); }
+
+const state = { tableId:null, tableNumber:null, sessionToken:null, qrToken:null, menu:[], cart:{}, activeCategory:null };
+
+async function api(method, path, body){
+  const res = await fetch(path, { method, headers: body ? {'Content-Type':'application/json'} : {}, body: body ? JSON.stringify(body) : undefined });
+  if(!res.ok){
+    let message = res.statusText;
+    try{ const errBody = await res.json(); message = errBody.error || message; }catch(e){ /* not JSON, keep statusText */ }
+    throw new Error(message);
+  }
+  const ct = res.headers.get('content-type')||'';
+  return ct.includes('application/json') ? res.json() : null;
+}
+
+// ---- Table picker (stands in for physically scanning a QR) ----
+async function loadTables(){
+  // If this page was opened via a real QR scan, the URL already carries
+  // ?table=<token> - skip the picker entirely and resolve straight away.
+  const urlParams = new URLSearchParams(location.search);
+  const scannedToken = urlParams.get('table');
+  if(scannedToken){
+    $('#table-picker').innerHTML = '<p style="color:var(--stone);">Connecting to your table...</p>';
+    try{
+      await selectTable(scannedToken);
+    }catch(e){
+      $('#table-picker').innerHTML = '<p style="color:var(--paprika);">Could not recognize this QR code. Please ask staff for help.</p>';
+    }
+    return;
+  }
+
+  // demo helper: hardcode the 6 seeded tables/tokens (a real QR scan skips this entirely)
+  const tokens = [1,2,3,4,5,6].map(n => ({ label: 'Table '+n, token: 'table-token-'+n }));
+  const box = $('#table-buttons');
+  tokens.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'btn secondary';
+    b.textContent = t.label;
+    b.onclick = () => selectTable(t.token);
+    box.appendChild(b);
+  });
+}
+
+function storageKeyFor(tableToken){ return 'session_token_' + tableToken; }
+
+async function selectTable(qrToken){
+  const resolved = await api('GET', '/api/public/tables/resolve?token=' + encodeURIComponent(qrToken));
+  state.tableId = resolved.tableId;
+  state.tableNumber = resolved.tableNumber;
+
+  const existing = localStorage.getItem(storageKeyFor(qrToken));
+  const session = await api('POST', '/api/public/sessions', { tableId: resolved.tableId, existingToken: existing });
+  state.sessionToken = session.sessionToken;
+  localStorage.setItem(storageKeyFor(qrToken), session.sessionToken);
+  state.qrToken = qrToken;
+
+  $('#table-picker').style.display = 'none';
+  $('#app').classList.add('active');
+  $('#table-label').textContent = state.tableNumber;
+  $('#session-short').textContent = session.sessionToken.slice(0,8);
+  $('#status-line').textContent = 'Connected — ' + state.tableNumber;
+
+  if(!session.customerPhone || !session.partySize){
+    $('#phone-overlay').classList.add('show');
+  }
+
+  await loadMenu();
+  await refreshOrders();
+  await refreshBillIfNeeded(session);
+}
+
+$('#new-device-btn').onclick = () => {
+  localStorage.removeItem(storageKeyFor(state.qrToken));
+  toast('Cleared — rescanning will start a brand-new bill for this device');
+  location.reload();
+};
+
+// ---- Phone number + party size gate ----
+$('#phone-submit-btn').onclick = async () => {
+  const phone = $('#phone-input').value.trim();
+  const partySize = Number($('#party-size-input').value);
+  const errBox = $('#phone-error');
+  try{
+    await api('POST', '/api/public/sessions/' + state.sessionToken + '/details', { phone, partySize });
+    errBox.style.display = 'none';
+    $('#phone-overlay').classList.remove('show');
+    toast('Thanks! Enjoy your meal 🍽');
+  }catch(e){
+    errBox.textContent = e.message || 'Please check your details and try again';
+    errBox.style.display = 'block';
+  }
+};
+
+// ---- Menu ----
+const CATEGORY_ORDER = ['STARTER','MAIN','DESSERT','BEVERAGE'];
+const CATEGORY_LABELS = {STARTER:'Starters', MAIN:'Mains', DESSERT:'Desserts', BEVERAGE:'Beverages'};
+
+async function loadMenu(){
+  state.menu = await api('GET', '/api/public/menu');
+  const presentCats = CATEGORY_ORDER.filter(c => state.menu.some(m => m.category === c));
+  state.activeCategory = presentCats[0] || null;
+  renderCategoryTabs(presentCats);
+  renderMenu();
+}
+
+function renderCategoryTabs(cats){
+  const box = $('#cat-tabs');
+  box.innerHTML = cats.map(c => `<button class="cat-tab ${c===state.activeCategory?'active':''}" data-cat="${c}">${CATEGORY_LABELS[c]||c}</button>`).join('');
+  box.querySelectorAll('.cat-tab').forEach(b => b.onclick = () => {
+    state.activeCategory = b.dataset.cat;
+    box.querySelectorAll('.cat-tab').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    renderMenu();
+  });
+}
+
+function renderMenu(){
+  const list = $('#menu-list');
+  list.innerHTML = '';
+  const items = state.menu.filter(m => m.category === state.activeCategory);
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'card menu-item';
+    el.innerHTML = `
+      <div class="row">
+        <div>
+          <div class="menu-item-name">${item.name}</div>
+          <div class="menu-item-desc">${item.description||''}</div>
+        </div>
+        <span class="price">${money(item.price)}</span>
+      </div>
+      <div class="row" style="margin-top:12px;">
+        <div class="qty-stepper">
+          <button class="qty-btn" data-act="dec" data-id="${item.id}">−</button>
+          <span class="qty-value" id="qty-${item.id}">0</span>
+          <button class="qty-btn" data-act="inc" data-id="${item.id}">+</button>
+        </div>
+        <button class="btn small paprika" data-add="${item.id}">Add</button>
+      </div>`;
+    list.appendChild(el);
+  });
+
+  const pending = {};
+  list.querySelectorAll('.qty-btn').forEach(b => b.onclick = () => {
+    const id = b.dataset.id;
+    pending[id] = (pending[id]||0) + (b.dataset.act==='inc'?1:-1);
+    if(pending[id]<0) pending[id]=0;
+    $('#qty-'+id).textContent = pending[id];
+  });
+  list.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
+    const id = b.dataset.add;
+    const qty = pending[id] || 1;
+    if(!state.cart[id]) state.cart[id] = 0;
+    state.cart[id] += qty;
+    pending[id] = 0;
+    $('#qty-'+id).textContent = 0;
+    renderYourOrder();
+
+    const item = state.menu.find(m => String(m.id)===String(id));
+    if(item && item.category === 'MAIN'){
+      showRecommendations(item.id);
+    } else {
+      toast(item.name + ' added to your order');
+    }
+  });
+}
+
+async function showRecommendations(mainItemId){
+  const recos = await api('GET', '/api/public/menu/recommendations?mainItemId=' + mainItemId);
+  if(!recos.length){ toast('Added to your order'); return; }
+  const box = $('#reco-list');
+  box.innerHTML = '';
+  recos.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.style.margin = '10px 0';
+    row.innerHTML = `<span style="font-size:14px;">${r.name} <span class="price">${money(r.price)}</span></span>
+      <button class="btn small herb" data-reco="${r.id}">Add</button>`;
+    box.appendChild(row);
+  });
+  box.querySelectorAll('[data-reco]').forEach(b => b.onclick = () => {
+    const id = b.dataset.reco;
+    state.cart[id] = (state.cart[id]||0) + 1;
+    renderYourOrder();
+    toast('Added');
+    $('#reco-overlay').classList.remove('show');
+  });
+  $('#reco-overlay').classList.add('show');
+}
+$('#reco-close-btn').onclick = () => $('#reco-overlay').classList.remove('show');
+
+// ---- The persistent "Your Order" cart card - this IS the cart, always visible ----
+function cartLines(){
+  return Object.entries(state.cart).filter(([,q]) => q>0)
+    .map(([id,q]) => ({ id, item: state.menu.find(m=>String(m.id)===String(id)), qty:q }));
+}
+function cartTotal(){ return cartLines().reduce((s,l)=>s + l.item.price*l.qty, 0); }
+
+function renderYourOrder(){
+  const lines = cartLines();
+  const body = $('#your-order-body');
+  const n = lines.reduce((s,l)=>s+l.qty,0);
+  $('#yo-count').textContent = n + (n===1 ? ' item' : ' items');
+
+  if(!lines.length){
+    body.innerHTML = '<div class="yo-empty">Add something from the menu above to get started.</div>';
+  } else {
+    body.innerHTML = lines.map(l => `
+      <div class="yo-line">
+        <span class="yo-line-name">${l.item.name}</span>
+        <div class="qty-stepper">
+          <button class="qty-btn" data-yo-dec="${l.id}">−</button>
+          <span class="qty-value">${l.qty}</span>
+          <button class="qty-btn" data-yo-inc="${l.id}">+</button>
+        </div>
+        <span class="price" style="min-width:60px;text-align:right;">${money(l.item.price*l.qty)}</span>
+      </div>
+    `).join('') + `
+      <div class="yo-total-row"><span>Total</span><span class="price">${money(cartTotal())}</span></div>
+      <button class="btn paprika full" style="margin-top:14px;" id="place-order-btn">Place Order</button>
+    `;
+    body.querySelectorAll('[data-yo-inc]').forEach(b => b.onclick = () => {
+      state.cart[b.dataset.yoInc]++; renderYourOrder();
+    });
+    body.querySelectorAll('[data-yo-dec]').forEach(b => b.onclick = () => {
+      state.cart[b.dataset.yoDec]--; renderYourOrder();
+    });
+    $('#place-order-btn').onclick = placeOrder;
+  }
+
+  // sticky bottom bar mirrors the same state, as a quick jump-back-to-cart shortcut
+  $('#cart-bar').classList.toggle('show', n > 0);
+  $('#cart-count').textContent = n + (n===1?' item':' items');
+  $('#cart-total').textContent = money(cartTotal());
+}
+$('#jump-to-order-btn').onclick = () => $('#your-order-card').scrollIntoView({behavior:'smooth', block:'center'});
+
+// ---- Placing the order: this is the ONLY point Pay Now/Later gets asked ----
+async function placeOrder(){
+  const lines = cartLines();
+  if(!lines.length) return;
+  const btn = $('#place-order-btn');
+  btn.textContent = 'Sending…'; btn.disabled = true;
+  try{
+    await api('POST', '/api/public/orders', {
+      sessionToken: state.sessionToken,
+      items: lines.map(l => ({ menuItemId: l.item.id, quantity: l.qty }))
+    });
+    state.cart = {};
+    renderYourOrder();
+    toast('Order sent to the kitchen 🍽');
+    await refreshOrders();
+
+    // First order of the session -> ask Pay Now or Pay Later, exactly once
+    const session = await api('GET', '/api/public/sessions/' + state.sessionToken);
+    if(session.paymentChoice === 'UNDECIDED'){
+      $('#pay-timing-overlay').classList.add('show');
+    }
+  }catch(e){
+    toast('Could not place order: ' + e.message);
+  }finally{
+    if(btn){ btn.textContent = 'Place Order'; btn.disabled = false; }
+  }
+}
+
+// ---- Orders / kitchen status / reorder ----
+async function refreshOrders(){
+  const orders = await api('GET', '/api/public/orders?sessionToken=' + state.sessionToken);
+  const box = $('#orders-list');
+  if(!orders.length){ box.innerHTML = '<p style="color:var(--stone);font-size:13px;">No orders placed yet.</p>'; return; }
+  box.innerHTML = orders.map(o => `
+    <div class="card">
+      <div class="row">
+        <strong class="mono" style="font-size:13px;">Order #${o.id}</strong>
+        <span class="badge ${o.status.toLowerCase()}">${o.status}</span>
+      </div>
+      <div style="font-size:13px;margin-top:8px;">
+        ${o.items.map(i => `${i.quantity} × ${i.nameSnapshot}`).join(', ')}
+      </div>
+      ${o.status==='REJECTED' ? `
+        <div style="font-size:12px;color:var(--stone);margin-top:6px;">Reason: ${o.rejectionReason||'—'}</div>
+        <button class="btn small paprika" style="margin-top:8px;" data-reorder="${o.id}">Reorder</button>
+      ` : ''}
+    </div>
+  `).join('');
+  box.querySelectorAll('[data-reorder]').forEach(b => b.onclick = async () => {
+    await api('POST', '/api/public/orders/' + b.dataset.reorder + '/reorder');
+    toast('Reordered');
+    refreshOrders();
+  });
+}
+setInterval(() => { if(state.sessionToken) refreshOrders(); }, 5000);
+
+// ---- Pay now / pay later ----
+$('#pay-now-choice-btn').onclick = async () => {
+  await api('POST', '/api/public/sessions/' + state.sessionToken + '/payment-choice', { choice: 'PAY_NOW' });
+  $('#pay-timing-overlay').classList.remove('show');
+  openPaymentMethodModal();
+};
+$('#pay-later-choice-btn').onclick = async () => {
+  await api('POST', '/api/public/sessions/' + state.sessionToken + '/payment-choice', { choice: 'PAY_LATER' });
+  $('#pay-timing-overlay').classList.remove('show');
+  toast('Enjoy your meal — request the bill whenever you\'re ready');
+};
+
+async function openPaymentMethodModal(){
+  const bill = await api('GET', '/api/public/sessions/' + state.sessionToken + '/bill');
+  $('#pay-method-total').querySelector('.price').textContent = money(bill.grandTotal);
+  $('#pay-method-overlay').classList.add('show');
+}
+
+$('#pay-upi-btn').onclick = async () => {
+  await api('POST', '/api/public/payments/upi/initiate', { sessionToken: state.sessionToken });
+  toast('Redirecting to UPI app... (simulated)');
+  setTimeout(async () => {
+    await api('POST', '/api/public/payments/upi/confirm', { sessionToken: state.sessionToken });
+    toast('Payment received ✅ — waiter is on the way to confirm');
+    $('#pay-method-overlay').classList.remove('show');
+    refreshBillIfNeeded();
+  }, 1200);
+};
+$('#pay-card-btn').onclick = () => choosePhysicalPayment('CARD');
+$('#pay-cash-btn').onclick = () => choosePhysicalPayment('CASH');
+async function choosePhysicalPayment(method){
+  await api('POST', '/api/public/payments/cash-or-card', { sessionToken: state.sessionToken, method });
+  toast('Waiter notified — they\'ll bring the ' + method.toLowerCase() + ' machine/change');
+  $('#pay-method-overlay').classList.remove('show');
+}
+
+// ---- Call waiter / Request bill ----
+$('#call-waiter-btn').onclick = async () => {
+  await api('POST', '/api/public/sessions/' + state.sessionToken + '/call-waiter');
+  toast('Waiter has been notified 🔔');
+};
+
+async function refreshBillIfNeeded(sessionMaybe){
+  const session = sessionMaybe || await api('GET', '/api/public/sessions/' + state.sessionToken);
+  const box = $('#bill-section');
+  if(session.status === 'CLOSED'){
+    box.style.display = 'block';
+    box.innerHTML = '<h3 style="margin:0;">Bill settled — thank you!</h3>';
+    return;
+  }
+  box.style.display = 'block';
+  const bill = await api('GET', '/api/public/sessions/' + state.sessionToken + '/bill');
+  const payTag = session.paymentChoice === 'UNDECIDED' ? '' :
+    `<div class="payment-tag">Paying: <strong>${session.paymentChoice === 'PAY_NOW' ? 'Now' : 'Later'}</strong></div>`;
+  box.innerHTML = `
+    <div class="row"><strong class="display">Running total</strong><span class="price" style="font-size:17px;">${money(bill.grandTotal)}</span></div>
+    ${payTag}
+    <button class="btn paprika full" style="margin-top:12px;" id="request-bill-btn">Request Bill</button>
+  `;
+  $('#request-bill-btn').onclick = async () => {
+    await api('POST', '/api/public/sessions/' + state.sessionToken + '/request-bill');
+    toast('Bill requested — staff notified. You can still add items.');
+    openPaymentMethodModal();
+  };
+}
+setInterval(() => { if(state.sessionToken) refreshBillIfNeeded(); }, 8000);
+
+renderYourOrder();
+loadTables();
+</script>
+</body>
+</html>

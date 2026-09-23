@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Run QrOrderingApplication",
+      "request": "launch",
+      "mainClass": "com.qrorder.QrOrderingApplication",
+      "projectName": "qr-ordering-system"
+    }
+  ]
+}

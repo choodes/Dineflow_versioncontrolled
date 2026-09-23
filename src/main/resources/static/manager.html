@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager Dashboard</title>
+<style>
+  :root{ --paper:#FAF6EE; --charcoal:#211F1C; --paprika:#C1440E; --herb:#2F5233; --stone:#8A8578; --line:#E4DDC9; --card:#FFFFFF; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--charcoal); font-family:system-ui,-apple-system,sans-serif;}
+  header{background:var(--charcoal); color:var(--paper); padding:18px 24px; display:flex; justify-content:space-between; align-items:center;}
+  header h1{margin:0; font-size:20px;}
+  main{max-width:1100px; margin:0 auto; padding:20px;}
+  nav{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;}
+  nav button{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:9px 16px; cursor:pointer; font-weight:600; font-size:13px;}
+  nav button.active{background:var(--charcoal); color:var(--paper); border-color:var(--charcoal);}
+  section{display:none;} section.active{display:block;}
+  table{width:100%; border-collapse:collapse; background:var(--card); border-radius:10px; overflow:hidden;}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); font-size:13px;}
+  tbody tr{transition:background .12s ease;}
+  tbody tr:hover{background:#F7F3E7;}
+  th{background:#F1EAD8; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--stone);}
+  .btn{border:none; border-radius:8px; padding:7px 12px; font-weight:600; cursor:pointer; font-size:12px;}
+  .btn.herb{background:var(--herb); color:#fff;}
+  .btn.paprika{background:var(--paprika); color:#fff;}
+  .btn.stone{background:var(--stone); color:#fff;}
+  input,select,textarea{padding:7px; border:1px solid var(--line); border-radius:6px; font-size:13px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:14px; transition:box-shadow .15s ease;}
+  .card:hover{box-shadow:0 3px 14px rgba(0,0,0,.06);}
+  .price{font-family:monospace; color:var(--paprika); font-weight:600;}
+  h2{font-size:16px; margin-top:0;}
+  form.inline{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px;}
+  .badge{padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600;}
+  .badge.active{background:#D1ECF1;color:#0C5460;} .badge.bill_requested{background:#FFF3CD;color:#856404;} .badge.closed{background:#E2E3E5;color:#383D41;}
+</style>
+</head>
+<body>
+<header><h1>📊 Manager Dashboard</h1><a href="/logout" style="color:var(--paper);font-size:12px;opacity:.8;">Logout</a></header>
+<main>
+  <nav>
+    <button class="active" data-tab="menu">Menu</button>
+    <button data-tab="tables">Tables / QR Codes</button>
+    <button data-tab="sessions">Sessions / Bills</button>
+    <button data-tab="disputes">Disputes</button>
+  </nav>
+
+  <section id="menu" class="active">
+    <div class="card">
+      <h2>Add Menu Item</h2>
+      <form class="inline" id="add-menu-form">
+        <input name="name" placeholder="Name" required>
+        <input name="description" placeholder="Description" style="flex:1;min-width:160px;">
+        <input name="price" type="number" step="1" placeholder="Price" required style="width:90px;">
+        <select name="category">
+          <option value="STARTER">Starter</option>
+          <option value="MAIN">Main</option>
+          <option value="DESSERT">Dessert</option>
+          <option value="BEVERAGE">Beverage</option>
+        </select>
+        <button class="btn herb" type="submit">Add</button>
+      </form>
+    </div>
+    <table id="menu-table">
+      <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Available</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section id="tables">
+    <div class="card">
+      <h2>Add Table</h2>
+      <form class="inline" id="add-table-form">
+        <input name="tableNumber" placeholder="e.g. Table 7" required>
+        <button class="btn herb" type="submit">Add Table</button>
+      </form>
+    </div>
+    <div id="tables-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;"></div>
+    <p style="font-size:12px;color:var(--stone);margin-top:16px;">
+      Print this page (Ctrl/Cmd+P) to get physical QR codes for each table.
+      Each code encodes that table's live ordering URL — scanning it with any
+      phone camera opens the customer menu directly, no app needed.
+    </p>
+  </section>
+
+  <section id="sessions">
+    <table id="sessions-table">
+      <thead><tr><th>Session</th><th>Table</th><th>Status</th><th>Pay Choice</th><th>Method</th><th>Payment</th><th>Phone</th><th>Total</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section id="disputes">
+    <table id="disputes-table">
+      <thead><tr><th>Session</th><th>Raised By</th><th>Note</th><th>Status</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+async function api(method, path, body){
+  const res = await fetch(path, { method, headers: body ? {'Content-Type':'application/json'} : {}, body: body ? JSON.stringify(body) : undefined });
+  if(!res.ok){
+    let message = res.statusText;
+    try{ const errBody = await res.json(); message = errBody.error || message; }catch(e){ /* not JSON, keep statusText */ }
+    throw new Error(message);
+  }
+  const ct = res.headers.get('content-type')||'';
+  return ct.includes('application/json') ? res.json() : null;
+}
+function money(n){ return '₹'+Number(n).toFixed(0); }
+
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $('#'+b.dataset.tab).classList.add('active');
+  if(b.dataset.tab==='sessions') loadSessions();
+  if(b.dataset.tab==='disputes') loadDisputes();
+  if(b.dataset.tab==='tables') loadTables();
+});
+
+// ---- Tables / QR Codes tab ----
+async function loadTables(){
+  const tables = await api('GET', '/api/manager/tables');
+  const grid = $('#tables-grid');
+  grid.innerHTML = tables.map(t => `
+    <div class="card" style="text-align:center;">
+      <strong>${t.tableNumber}</strong>
+      <div style="margin:10px 0;"><img src="/api/manager/tables/${t.id}/qrcode.png" alt="QR for ${t.tableNumber}" style="width:100%;max-width:180px;"></div>
+      <div style="font-size:11px;color:var(--stone);word-break:break-all;">token: ${t.qrToken}</div>
+    </div>
+  `).join('');
+}
+
+$('#add-table-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  await api('POST', '/api/manager/tables', { tableNumber: fd.get('tableNumber') });
+  e.target.reset();
+  loadTables();
+});
+
+// ---- Menu tab ----
+async function loadMenu(){
+  const items = await api('GET', '/api/manager/menu');
+  $('#menu-table tbody').innerHTML = items.map(i => `
+    <tr>
+      <td><strong>${i.name}</strong><div style="font-size:11px;color:var(--stone)">${i.description||''}</div></td>
+      <td>${i.category}</td>
+      <td class="price">${money(i.price)}</td>
+      <td>${i.available ? '✅' : '❌'}</td>
+      <td>
+        <button class="btn stone" data-toggle="${i.id}" data-avail="${i.available}">${i.available?'Mark 86 (unavailable)':'Mark Available'}</button>
+        <button class="btn paprika" data-delete="${i.id}">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+
+  document.querySelectorAll('[data-toggle]').forEach(b => b.onclick = async () => {
+    const item = items.find(i => String(i.id)===b.dataset.toggle);
+    item.available = !item.available;
+    await api('PUT', '/api/manager/menu/' + item.id, item);
+    loadMenu();
+  });
+  document.querySelectorAll('[data-delete]').forEach(b => b.onclick = async () => {
+    if(!confirm('Delete this item?')) return;
+    await api('DELETE', '/api/manager/menu/' + b.dataset.delete);
+    loadMenu();
+  });
+}
+
+$('#add-menu-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  await api('POST', '/api/manager/menu', {
+    name: fd.get('name'), description: fd.get('description'),
+    price: Number(fd.get('price')), category: fd.get('category'), available: true
+  });
+  e.target.reset();
+  loadMenu();
+});
+
+// ---- Sessions tab ----
+async function loadSessions(){
+  const sessions = await api('GET', '/api/manager/sessions');
+  $('#sessions-table tbody').innerHTML = sessions.map(s => `
+    <tr>
+      <td>#${s.id}</td>
+      <td>Table ${s.tableId}</td>
+      <td><span class="badge ${s.status.toLowerCase()}">${s.status}</span></td>
+      <td>${s.paymentChoice}</td>
+      <td>${s.paymentMethod||'—'}</td>
+      <td>${s.paymentStatus}</td>
+      <td>${s.customerPhone || '—'}</td>
+      <td class="price">${money(s.total)}</td>
+      <td><button class="btn paprika" data-override="${s.id}">Override & Close</button></td>
+    </tr>
+  `).join('');
+  document.querySelectorAll('[data-override]').forEach(b => b.onclick = async () => {
+    const reason = prompt('Reason for override/close (e.g. walkout, comped meal)?');
+    if(reason===null) return;
+    await api('POST', '/api/manager/sessions/' + b.dataset.override + '/override-close', { reason });
+    loadSessions();
+  });
+}
+
+// ---- Disputes tab ----
+async function loadDisputes(){
+  const disputes = await api('GET', '/api/manager/disputes');
+  $('#disputes-table tbody').innerHTML = disputes.length ? disputes.map(d => `
+    <tr>
+      <td>#${d.sessionId}</td>
+      <td>${d.raisedBy}</td>
+      <td>${d.note}</td>
+      <td>${d.status}</td>
+      <td>${d.status==='OPEN' ? `<button class="btn herb" data-resolve="${d.id}">Resolve</button>` : ''}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="5" style="color:var(--stone);">No disputes.</td></tr>';
+  document.querySelectorAll('[data-resolve]').forEach(b => b.onclick = async () => {
+    const note = prompt('Resolution note?', 'Resolved by manager');
+    await api('POST', '/api/manager/disputes/' + b.dataset.resolve + '/resolve', { resolutionNote: note||'' });
+    loadDisputes();
+  });
+}
+
+loadMenu();
+</script>
+</body>
+</html>
