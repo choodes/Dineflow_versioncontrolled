@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Login — Dineflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 16px;
+    background: radial-gradient(circle at 50% 20%, #FFFDF8 0%, var(--surface-canvas) 100%);
+  }
+
+  .login-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    max-width: 440px;
+    width: 100%;
+    padding: 36px 32px 30px;
+    animation: fadeInSlide 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .login-brand-header {
+    text-align: center;
+    margin-bottom: 26px;
+  }
+
+  .login-brand-icon {
+    font-size: 36px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+
+  .login-brand-title {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--brand-charcoal);
+    letter-spacing: -0.02em;
+  }
+
+  .login-brand-sub {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+
+  .login-field {
+    margin-bottom: 16px;
+  }
+
+  .login-field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  .login-field input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 14.5px;
+  }
+
+  /* Quick Demo Auto-Fill Chips */
+  .demo-accounts-box {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-line);
+  }
+
+  .demo-accounts-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .demo-chip-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .demo-chip {
+    background: var(--surface-canvas);
+    border: 1px solid var(--border-line);
+    border-radius: var(--radius-sm);
+    padding: 8px 6px;
+    font-size: 12px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--ink-primary);
+    cursor: pointer;
+    text-align: center;
+    transition: all var(--transition-fast);
+  }
+
+  .demo-chip:hover {
+    background: var(--surface-subtle);
+    border-color: var(--ink-muted);
+    transform: translateY(-1px);
+  }
+
+  .demo-chip:active {
+    transform: scale(0.97);
+  }
+
+  .demo-chip span {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    margin-top: 2px;
+  }
+
+  /* Alert Notice */
+  .auth-notice {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-bottom: 20px;
+    display: none;
+    line-height: 1.4;
+  }
+
+  .auth-notice.error {
+    background: var(--state-rejected-bg);
+    color: var(--state-rejected);
+    border: 1px solid rgba(155, 44, 44, 0.25);
+    display: block;
+  }
+
+  .auth-notice.success {
+    background: var(--state-ready-bg);
+    color: var(--state-ready);
+    border: 1px solid rgba(39, 103, 73, 0.25);
+    display: block;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .back-link:hover {
+    color: var(--ink-primary);
+  }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-brand-header">
+    <span class="login-brand-icon">🍽️</span>
+    <h1 class="login-brand-title">Dineflow</h1>
+    <div class="login-brand-sub">Staff Authentication Portal</div>
+  </div>
+
+  <div id="notice-error" class="auth-notice error">
+    Invalid username or password. Please verify your credentials.
+  </div>
+
+  <div id="notice-logout" class="auth-notice success">
+    You have been successfully signed out.
+  </div>
+
+  <form method="POST" action="/login">
+    <div class="login-field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="e.g. kitchen, waiter, manager" required autofocus autocomplete="username">
+    </div>
+
+    <div class="login-field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+    </div>
+
+    <button type="submit" class="ui-btn paprika full-width" style="padding: 13px; font-size: 15px; margin-top: 10px;">
+      Sign In to Station
+    </button>
+  </form>
+
+  <!-- Quick Auto-Fill for Pair-Testing & Demos -->
+  <div class="demo-accounts-box">
+    <div class="demo-accounts-label">Demo Credentials (Tap to Auto-Fill)</div>
+    <div class="demo-chip-grid">
+      <button type="button" class="demo-chip" onclick="fillCreds('kitchen', 'kitchen123')">
+        👨‍🍳 Kitchen
+        <span>kitchen123</span>
+      </button>
+      <button type="button" class="demo-chip" onclick="fillCreds('waiter', 'waiter123')">
+        🧑‍🍳 Waiter
+        <span>waiter123</span>
+      </button>
+      <button type="button" class="demo-chip" onclick="fillCreds('manager', 'manager123')">
+        📊 Manager
+        <span>manager123</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<a href="/index.html" class="back-link">← Return to Landing / Customer Portal</a>
+
+<script>
+  // Detect error / logout query parameters
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('error')) {
+    document.getElementById('notice-error').style.display = 'block';
+  }
+  if (params.has('logout')) {
+    document.getElementById('notice-logout').style.display = 'block';
+  }
+
+  function fillCreds(u, p) {
+    document.getElementById('username').value = u;
+    document.getElementById('password').value = p;
+  }
+</script>
+</body>
+</html>

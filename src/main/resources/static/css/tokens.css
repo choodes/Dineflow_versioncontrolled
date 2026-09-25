@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Dineflow Design Tokens & Semantic Variables
+   ========================================================================== */
+
+:root {
+  /* Surfaces & Canvas */
+  --surface-canvas: #F8F5EE;       /* Warm parchment background */
+  --surface-card: #FFFFFF;         /* Crisp white card surface */
+  --surface-subtle: #F0E9D8;       /* Subtle muted backgrounds & zebra stripes */
+  --surface-elevated: #FFFFFF;     /* Elevated modals & floating drawers */
+  --surface-overlay: rgba(20, 18, 15, 0.58); /* Modal backdrop */
+
+  /* Text & Inks */
+  --ink-primary: #1C1A17;          /* High contrast deep charcoal */
+  --ink-secondary: #5C584E;        /* Body & description text */
+  --ink-muted: #8C8679;            /* Captions, labels, timestamps */
+  --ink-inverse: #FAF7F0;          /* White text on dark buttons/headers */
+
+  /* Brand Accents */
+  --brand-charcoal: #211F1C;
+  --brand-paprika: #C84617;        /* Terracotta / warm paprika */
+  --brand-paprika-hover: #A5360E;
+  --brand-paprika-soft: #FDEEE9;
+  --brand-herb: #285934;           /* Botanical kitchen green */
+  --brand-herb-hover: #1E4427;
+  --brand-herb-soft: #EBF4ED;
+  --brand-amber: #D9822B;          /* Warm golden amber */
+  --brand-amber-soft: #FEF6EC;
+
+  /* Semantic Statuses */
+  --state-placed: #B7791F;         /* Yellow/Amber for placed */
+  --state-placed-bg: #FEFCBF;
+  --state-accepted: #2B6CB0;       /* Blue for accepted/cooking */
+  --state-accepted-bg: #EBF8FF;
+  --state-ready: #276749;          /* Green for ready */
+  --state-ready-bg: #F0FFF4;
+  --state-served: #4A5568;         /* Neutral slate for served */
+  --state-served-bg: #EDF2F7;
+  --state-rejected: #9B2C2C;       /* Red for rejected */
+  --state-rejected-bg: #FFF5F5;
+
+  /* Borders & Dividers */
+  --border-subtle: rgba(33, 31, 28, 0.08);
+  --border-line: #E4DDC9;
+  --border-focus: #1C1A17;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(33, 31, 28, 0.05);
+  --shadow-sm: 0 1px 3px rgba(33, 31, 28, 0.07), 0 1px 2px rgba(33, 31, 28, 0.04);
+  --shadow-md: 0 4px 16px rgba(33, 31, 28, 0.08), 0 2px 4px rgba(33, 31, 28, 0.04);
+  --shadow-lg: 0 12px 32px rgba(33, 31, 28, 0.12), 0 4px 10px rgba(33, 31, 28, 0.06);
+  --shadow-floating: 0 -8px 24px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* Typography Stacks */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', Menlo, Consolas, monospace;
+
+  /* Border Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-bounce: 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}

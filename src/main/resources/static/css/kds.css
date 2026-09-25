@@ -1,0 +1,153 @@
+/* ==========================================================================
+   Dineflow Kitchen Display System (KDS) Industrial Dark Theme
+   ========================================================================== */
+
+body.kds-theme {
+  background-color: #121214;
+  color: #F0F0F2;
+}
+
+body.kds-theme .app-header {
+  background: #1A1A1E;
+  border-bottom: 1px solid #2A2A30;
+}
+
+/* KDS Grid */
+.kds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* KDS Order Ticket Card */
+.kds-ticket {
+  background: #1C1C22;
+  border: 1px solid #2E2E38;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.kds-ticket:hover {
+  transform: translateY(-2px);
+}
+
+/* Urgency Thresholds */
+.kds-ticket.urgency-normal {
+  border-left: 6px solid #38A169;
+}
+
+.kds-ticket.urgency-warning {
+  border-left: 6px solid #D69E2E;
+}
+
+.kds-ticket.urgency-rush {
+  border-left: 6px solid #E53E3E;
+  animation: rushBlink 1.6s infinite ease-in-out;
+}
+
+@keyframes rushBlink {
+  0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(229, 62, 62, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
+}
+
+.kds-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2B2B36;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.kds-order-num {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.kds-timer-badge {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: #2A2A36;
+  color: #CBD5E0;
+}
+
+.kds-ticket.urgency-normal .kds-timer-badge {
+  background: rgba(56, 161, 105, 0.2);
+  color: #68D391;
+}
+
+.kds-ticket.urgency-warning .kds-timer-badge {
+  background: rgba(214, 158, 46, 0.2);
+  color: #F6E05E;
+}
+
+.kds-ticket.urgency-rush .kds-timer-badge {
+  background: rgba(229, 62, 62, 0.25);
+  color: #FC8181;
+}
+
+/* Checklist Items */
+.kds-item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  flex: 1;
+}
+
+.kds-item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 6px;
+  border-bottom: 1px solid #262630;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity var(--transition-fast);
+}
+
+.kds-item-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.kds-item-row.completed {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.kds-item-qty {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  color: #63B3ED;
+  min-width: 24px;
+}
+
+.kds-item-name {
+  font-size: 14.5px;
+  color: #E2E8F0;
+  font-weight: 500;
+}
+
+/* KDS Actions */
+.kds-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.kds-actions .ui-btn {
+  flex: 1;
+  padding: 11px 12px;
+  font-size: 13.5px;
+}

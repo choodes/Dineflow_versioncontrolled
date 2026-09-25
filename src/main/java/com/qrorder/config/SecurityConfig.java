@@ -54,21 +54,25 @@ public class SecurityConfig {
                 // dev convenience console
                 .requestMatchers("/h2-console/**").permitAll()
                 // static assets / login page itself
-                .requestMatchers("/login", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/login", "/login.html", "/css/**", "/js/**").permitAll()
                 // role-gated dashboards - manager can also view kitchen/waiter screens
                 .requestMatchers("/kitchen.html", "/api/kitchen/**").hasAnyRole("KITCHEN", "MANAGER")
                 .requestMatchers("/waiter.html", "/api/waiter/**").hasAnyRole("WAITER", "MANAGER")
                 .requestMatchers("/manager.html", "/api/manager/**").hasRole("MANAGER")
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form.permitAll())
+            .formLogin(form -> form
+                .loginPage("/login.html")
+                .loginProcessingUrl("/login")
+                .permitAll())
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                .logoutSuccessUrl("/login.html?logout")
                 .permitAll())
             // our fetch() calls from static HTML don't carry CSRF tokens, so
             // the JSON API is exempted - acceptable for this demo, a real
             // build would add token handling instead of disabling it broadly
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**", "/login"))
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         return http.build();
     }

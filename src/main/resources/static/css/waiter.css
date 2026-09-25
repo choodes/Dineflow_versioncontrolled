@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Dineflow Waiter Operations Styles
+   ========================================================================== */
+
+/* Search Area */
+.search-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.search-input-group input {
+  flex: 1;
+  font-size: 15px;
+}
+
+/* Floor Plan Table Matrix */
+.table-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.table-matrix-card {
+  background: var(--surface-card);
+  border: 1.5px solid var(--border-line);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.table-matrix-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.table-matrix-card.status-active {
+  border-left: 5px solid var(--brand-herb);
+}
+
+.table-matrix-card.status-idle-alert {
+  border-left: 5px solid #E53E3E;
+  background: #FFF5F5;
+}
+
+.table-matrix-card.status-bill {
+  border-left: 5px solid var(--brand-amber);
+  background: #FFFAF0;
+}
+
+.table-matrix-card.status-closed {
+  border-left: 5px solid var(--ink-muted);
+  opacity: 0.75;
+}
+
+.matrix-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.matrix-table-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.matrix-card-body {
+  font-size: 12.5px;
+  color: var(--ink-secondary);
+}
+
+/* Delivery & Call Cards Grid */
+.cards-columns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}

@@ -1,0 +1,344 @@
+/* ==========================================================================
+   Dineflow UI Components (Buttons, Cards, Badges, Modals, Forms)
+   ========================================================================== */
+
+/* Cards */
+.ui-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.ui-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.flex-gap-sm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Buttons */
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--brand-charcoal);
+  color: var(--ink-inverse);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  line-height: 1.2;
+}
+
+.ui-btn:active {
+  transform: scale(0.97);
+}
+
+.ui-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.ui-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border-line);
+  color: var(--ink-primary);
+}
+
+.ui-btn.secondary:hover {
+  background: var(--surface-subtle);
+  border-color: var(--ink-muted);
+}
+
+.ui-btn.paprika {
+  background: var(--brand-paprika);
+  color: #FFFFFF;
+}
+
+.ui-btn.paprika:hover {
+  background: var(--brand-paprika-hover);
+}
+
+.ui-btn.herb {
+  background: var(--brand-herb);
+  color: #FFFFFF;
+}
+
+.ui-btn.herb:hover {
+  background: var(--brand-herb-hover);
+}
+
+.ui-btn.stone {
+  background: var(--ink-muted);
+  color: #FFFFFF;
+}
+
+.ui-btn.stone:hover {
+  background: var(--ink-secondary);
+}
+
+.ui-btn.small {
+  padding: 7px 12px;
+  font-size: 12.5px;
+  border-radius: var(--radius-sm);
+}
+
+.ui-btn.full-width {
+  width: 100%;
+}
+
+.ui-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Badges */
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ui-badge.placed {
+  background: var(--state-placed-bg);
+  color: var(--state-placed);
+  border: 1px solid rgba(183, 121, 31, 0.3);
+}
+
+.ui-badge.accepted {
+  background: var(--state-accepted-bg);
+  color: var(--state-accepted);
+  border: 1px solid rgba(43, 108, 176, 0.3);
+}
+
+.ui-badge.ready {
+  background: var(--state-ready-bg);
+  color: var(--state-ready);
+  border: 1px solid rgba(39, 103, 73, 0.3);
+}
+
+.ui-badge.served {
+  background: var(--state-served-bg);
+  color: var(--state-served);
+  border: 1px solid rgba(74, 85, 104, 0.3);
+}
+
+.ui-badge.rejected {
+  background: var(--state-rejected-bg);
+  color: var(--state-rejected);
+  border: 1px solid rgba(155, 44, 44, 0.3);
+}
+
+.ui-badge.open {
+  background: #FFF5F5;
+  color: #C53030;
+  border: 1px solid #FEB2B2;
+}
+
+.ui-badge.attending {
+  background: #EBF8FF;
+  color: #2B6CB0;
+  border: 1px solid #BEE3F8;
+}
+
+/* Dietary Markers (Indian Hospitality Standard) */
+.diet-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.diet-marker.veg {
+  border: 1.5px solid #276749;
+}
+
+.diet-marker.veg::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #276749;
+}
+
+.diet-marker.non-veg {
+  border: 1.5px solid #9B2C2C;
+}
+
+.diet-marker.non-veg::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 7px solid #9B2C2C;
+}
+
+/* Prices */
+.price-tag {
+  font-family: var(--font-mono);
+  color: var(--brand-paprika);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+/* Forms & Inputs */
+input, select, textarea {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-line);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  background: var(--surface-card);
+  color: var(--ink-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--ink-primary);
+  box-shadow: 0 0 0 3px rgba(28, 26, 23, 0.1);
+}
+
+/* Modals */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--surface-overlay);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+  padding: 0;
+}
+
+@media (min-width: 600px) {
+  .modal-backdrop {
+    align-items: center;
+    padding: 20px;
+  }
+}
+
+.modal-backdrop.show {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--surface-elevated);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 26px 24px 34px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: modalSlideUp 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 600px) {
+  .modal-content {
+    border-radius: var(--radius-lg);
+    animation: modalPop 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Data Tables */
+.ui-table-wrap {
+  background: var(--surface-card);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-top: 14px;
+}
+
+.ui-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ui-table th {
+  background: var(--surface-subtle);
+  padding: 12px 14px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-secondary);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border-line);
+}
+
+.ui-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-line);
+  font-size: 13.5px;
+  color: var(--ink-primary);
+}
+
+.ui-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.ui-table tbody tr:hover {
+  background: rgba(240, 233, 216, 0.5);
+}
+
+.ui-table tbody tr:last-child td {
+  border-bottom: none;
+}
