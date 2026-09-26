@@ -1,18 +1,20 @@
 /* ==========================================================================
-   Dineflow Customer Mobile Experience
+   Dineflow Customer Mobile Experience — Noir Luxury Edition
+   Premium dining interface with glass morphism and gold accents
    ========================================================================== */
 
-/* Frosted Table Status Bar */
+/* ===== Frosted Table Status Bar ===== */
 .customer-status-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--surface-card);
-  border: 1px solid var(--border-line);
+  background: rgba(19, 19, 24, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.15);
   border-radius: var(--radius-md);
   padding: 14px 18px;
   margin-bottom: 14px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 12px rgba(212, 175, 55, 0.06);
+  backdrop-filter: blur(12px);
 }
 
 .table-pill {
@@ -31,10 +33,17 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--brand-herb);
+  background: #68D391;
+  box-shadow: 0 0 8px rgba(104, 211, 145, 0.6);
+  animation: pulseGreen 2s infinite ease-in-out;
 }
 
-/* Category Filter Tabs */
+@keyframes pulseGreen {
+  0%, 100% { box-shadow: 0 0 4px rgba(104, 211, 145, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(104, 211, 145, 0.8); }
+}
+
+/* ===== Category Filter Tabs ===== */
 .cat-scroll-container {
   display: flex;
   gap: 8px;
@@ -53,46 +62,63 @@
   flex-shrink: 0;
   padding: 9px 18px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-line);
-  background: var(--surface-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(19, 19, 24, 0.75);
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
   color: var(--ink-secondary);
   white-space: nowrap;
   transition: all var(--transition-fast);
-  box-shadow: var(--shadow-xs);
+  backdrop-filter: blur(8px);
 }
 
 .cat-chip:hover {
-  border-color: var(--ink-muted);
+  border-color: rgba(212, 175, 55, 0.35);
   color: var(--ink-primary);
+  background: rgba(212, 175, 55, 0.08);
 }
 
 .cat-chip.active {
-  background: var(--brand-charcoal);
-  color: var(--ink-inverse);
-  border-color: var(--brand-charcoal);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(135deg, var(--brand-gold) 0%, #C5A059 100%);
+  color: #09090C;
+  border-color: var(--brand-gold);
+  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.4);
+  font-weight: 700;
 }
 
-/* Menu Item Card */
+/* ===== Menu Item Card ===== */
 .menu-dish-card {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 14px;
-  background: var(--surface-card);
-  border: 1px solid var(--border-line);
+  background: rgba(19, 19, 24, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
   padding: 16px;
   margin-bottom: 12px;
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-dish-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.15), transparent);
 }
 
 .menu-dish-card:hover {
-  box-shadow: var(--shadow-md);
+  border-color: rgba(212, 175, 55, 0.2);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55), 0 0 12px rgba(212, 175, 55, 0.06);
+  transform: translateY(-1px);
 }
 
 .dish-details {
@@ -121,7 +147,7 @@
   margin: 0 0 8px;
 }
 
-/* Pill Stepper Button */
+/* ===== Pill Stepper Button ===== */
 .dish-action-area {
   display: flex;
   flex-direction: column;
@@ -133,11 +159,11 @@
 .stepper-pill {
   display: inline-flex;
   align-items: center;
-  background: var(--surface-canvas);
-  border: 1.5px solid var(--border-line);
+  background: rgba(9, 9, 12, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-pill);
   overflow: hidden;
-  box-shadow: var(--shadow-xs);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .stepper-btn {
@@ -152,11 +178,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .stepper-btn:hover {
-  background: var(--surface-subtle);
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--brand-gold);
 }
 
 .stepper-count {
@@ -165,17 +192,29 @@
   font-family: var(--font-mono);
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--brand-gold);
 }
 
-/* Order Progress Timeline */
+/* ===== Order Progress Timeline ===== */
 .order-tracker-card {
-  background: var(--surface-card);
-  border: 1px solid var(--border-line);
+  background: rgba(19, 19, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
   padding: 16px;
   margin-bottom: 12px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.order-tracker-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.12), transparent);
 }
 
 .tracker-timeline {
@@ -184,6 +223,18 @@
   justify-content: space-between;
   margin: 16px 0 10px;
   position: relative;
+}
+
+/* Connecting line between dots */
+.tracker-timeline::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  z-index: 1;
 }
 
 .tracker-step {
@@ -200,48 +251,53 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--border-line);
-  border: 2px solid var(--surface-card);
-  transition: all var(--transition-fast);
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  transition: all var(--transition-smooth);
 }
 
 .tracker-step.active .tracker-dot {
-  background: var(--brand-herb);
-  box-shadow: 0 0 0 4px rgba(40, 89, 52, 0.2);
+  background: var(--brand-gold);
+  border-color: var(--brand-gold);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2), 0 0 12px rgba(212, 175, 55, 0.4);
+  animation: softPulse 1.8s infinite ease-in-out;
 }
 
 .tracker-step.completed .tracker-dot {
-  background: var(--brand-herb);
+  background: var(--brand-gold);
+  border-color: var(--brand-gold);
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.3);
 }
 
 .tracker-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10.5px;
+  font-weight: 700;
   color: var(--ink-muted);
   text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .tracker-step.active .tracker-label,
 .tracker-step.completed .tracker-label {
-  color: var(--ink-primary);
+  color: var(--brand-gold);
 }
 
-/* Sticky Floating Cart Pill */
+/* ===== Sticky Floating Cart Pill ===== */
 .floating-cart-pill {
   position: fixed;
-  left: 20px;
-  right: 20px;
+  left: 16px;
+  right: 16px;
   bottom: 20px;
   max-width: 600px;
   margin: 0 auto;
-  background: var(--brand-charcoal);
-  color: var(--ink-inverse);
+  background: linear-gradient(135deg, var(--brand-gold) 0%, #C5A059 100%);
+  color: #09090C;
   padding: 14px 20px;
   border-radius: var(--radius-pill);
   display: none;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow-floating);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 28px rgba(212, 175, 55, 0.35);
   z-index: 90;
   cursor: pointer;
   transition: transform var(--transition-fast);
@@ -249,7 +305,7 @@
 
 .floating-cart-pill.show {
   display: flex;
-  animation: slideUpFloat 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUpFloat 280ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideUpFloat {
@@ -268,9 +324,9 @@
 }
 
 .cart-pill-badge {
-  background: var(--brand-paprika);
-  color: #FFFFFF;
-  padding: 3px 9px;
+  background: #09090C;
+  color: var(--brand-gold);
+  padding: 3px 10px;
   border-radius: var(--radius-pill);
   font-size: 12px;
   font-weight: 700;

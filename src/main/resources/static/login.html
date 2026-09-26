@@ -17,14 +17,14 @@
     justify-content: center;
     align-items: center;
     padding: 24px 16px;
-    background: radial-gradient(circle at 50% 20%, #FFFDF8 0%, var(--surface-canvas) 100%);
+    background: radial-gradient(circle at 50% 20%, #171722 0%, var(--surface-canvas) 100%);
   }
 
   .login-card {
     background: var(--surface-card);
     border: 1px solid var(--border-line);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 24px rgba(212, 175, 55, 0.08);
     max-width: 440px;
     width: 100%;
     padding: 36px 32px 30px;
@@ -49,10 +49,10 @@
 
   .login-brand-title {
     font-family: var(--font-display);
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 700;
     margin: 0;
-    color: var(--brand-charcoal);
+    color: var(--brand-gold);
     letter-spacing: -0.02em;
   }
 
@@ -119,8 +119,9 @@
   }
 
   .demo-chip:hover {
-    background: var(--surface-subtle);
-    border-color: var(--ink-muted);
+    background: rgba(212, 175, 55, 0.08);
+    border-color: var(--brand-gold);
+    color: var(--brand-gold);
     transform: translateY(-1px);
   }
 

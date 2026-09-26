@@ -1,38 +1,59 @@
 /* ==========================================================================
-   Dineflow Manager SaaS Control Center Styles
+   Dineflow Manager SaaS Control Center — Noir Executive Dashboard
+   Premium dark glass KPIs, gold-accented navigation, refined tables
    ========================================================================== */
 
-/* KPI Metric Cards Grid */
+/* ===== KPI Metric Cards Grid ===== */
 .kpi-metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .kpi-card {
-  background: var(--surface-card);
-  border: 1px solid var(--border-line);
+  background: rgba(19, 19, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
-  padding: 16px 18px;
-  box-shadow: var(--shadow-sm);
+  padding: 18px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.kpi-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.15), transparent);
+}
+
+.kpi-card:hover {
+  border-color: rgba(212, 175, 55, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 12px rgba(212, 175, 55, 0.06);
 }
 
 .kpi-card-label {
-  font-size: 12px;
+  font-size: 11.5px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-muted);
-  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--brand-gold);
+  font-weight: 700;
   margin-bottom: 6px;
 }
 
 .kpi-card-value {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--ink-primary);
   letter-spacing: -0.02em;
@@ -45,42 +66,58 @@
   margin-top: 4px;
 }
 
-/* Nav Tabs */
+/* ===== Navigation Tabs — Premium Gold Underline ===== */
 .dashboard-nav {
   display: flex;
-  gap: 8px;
-  margin-bottom: 22px;
-  border-bottom: 1px solid var(--border-line);
-  padding-bottom: 10px;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0;
   overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.dashboard-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .dashboard-nav-btn {
   background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  padding: 10px 18px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 12px 18px;
   cursor: pointer;
   font-weight: 600;
   font-size: 13.5px;
-  color: var(--ink-secondary);
+  color: var(--ink-muted);
   font-family: var(--font-sans);
   transition: all var(--transition-fast);
   white-space: nowrap;
+  position: relative;
 }
 
 .dashboard-nav-btn:hover {
   color: var(--ink-primary);
-  background: var(--surface-subtle);
 }
 
 .dashboard-nav-btn.active {
-  background: var(--brand-charcoal);
-  color: var(--ink-inverse);
-  box-shadow: var(--shadow-xs);
+  color: var(--brand-gold);
+  border-bottom-color: var(--brand-gold);
 }
 
-/* iOS-Style Toggle Switch */
+.dashboard-nav-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  background: var(--brand-gold);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+}
+
+/* ===== iOS-Style Toggle Switch ===== */
 .switch-control {
   position: relative;
   display: inline-block;
@@ -98,7 +135,7 @@
   position: absolute;
   cursor: pointer;
   inset: 0;
-  background-color: #CBD5E0;
+  background-color: rgba(107, 107, 123, 0.4);
   transition: var(--transition-fast);
   border-radius: 24px;
 }
@@ -113,18 +150,34 @@
   background-color: white;
   transition: var(--transition-fast);
   border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 input:checked + .slider-knob {
-  background-color: var(--brand-herb);
+  background: linear-gradient(135deg, var(--brand-gold) 0%, #C5A059 100%);
 }
 
 input:checked + .slider-knob::before {
   transform: translateX(20px);
 }
 
-/* Printable QR Tent-Cards */
+/* ===== Table QR Cards ===== */
+.table-qr-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.table-qr-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.15), transparent);
+}
+
+/* ===== Printable QR Tent-Cards ===== */
 @media print {
   body {
     background: #FFF !important;
@@ -137,9 +190,13 @@ input:checked + .slider-knob::before {
   }
   .table-qr-card {
     border: 2px dashed #000 !important;
+    background: #FFF !important;
     page-break-inside: avoid;
     margin: 20px;
     padding: 30px;
     text-align: center;
+  }
+  .table-qr-card::before {
+    display: none;
   }
 }

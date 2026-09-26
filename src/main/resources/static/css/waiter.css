@@ -1,15 +1,29 @@
 /* ==========================================================================
-   Dineflow Waiter Operations Styles
+   Dineflow Waiter Operations — Premium Noir Floor Management
+   Glass morphism cards with gold-accented status indicators
    ========================================================================== */
 
-/* Search Area */
+/* ===== Phone Search Area ===== */
 .search-card {
-  background: var(--surface-card);
-  border: 1px solid var(--border-line);
+  background: rgba(19, 19, 24, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.15);
   border-radius: var(--radius-md);
-  padding: 18px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 12px rgba(212, 175, 55, 0.04);
+  backdrop-filter: blur(12px);
+  position: relative;
+}
+
+.search-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .search-input-group {
@@ -22,7 +36,7 @@
   font-size: 15px;
 }
 
-/* Floor Plan Table Matrix */
+/* ===== Floor Plan Table Matrix ===== */
 .table-matrix-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -31,60 +45,98 @@
 }
 
 .table-matrix-card {
-  background: var(--surface-card);
-  border: 1.5px solid var(--border-line);
+  background: rgba(19, 19, 24, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
   padding: 14px 16px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
   transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.table-matrix-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
 }
 
 .table-matrix-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  border-color: rgba(212, 175, 55, 0.2);
 }
 
+/* Status Variants */
 .table-matrix-card.status-active {
-  border-left: 5px solid var(--brand-herb);
+  border-left: 5px solid var(--brand-gold);
+}
+
+.table-matrix-card.status-active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--brand-gold), transparent);
+  opacity: 0.3;
 }
 
 .table-matrix-card.status-idle-alert {
-  border-left: 5px solid #E53E3E;
-  background: #FFF5F5;
+  border-left: 5px solid #FC8181;
+  background: rgba(252, 129, 129, 0.04);
+  animation: idleAlertPulse 3s infinite ease-in-out;
+}
+
+@keyframes idleAlertPulse {
+  0%, 100% { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4); }
+  50% { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 0 16px rgba(252, 129, 129, 0.1); }
 }
 
 .table-matrix-card.status-bill {
-  border-left: 5px solid var(--brand-amber);
-  background: #FFFAF0;
+  border-left: 5px solid #68D391;
+  background: rgba(104, 211, 145, 0.04);
 }
 
 .table-matrix-card.status-closed {
   border-left: 5px solid var(--ink-muted);
-  opacity: 0.75;
+  opacity: 0.6;
 }
 
 .matrix-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .matrix-table-title {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 16px;
+  color: var(--ink-primary);
 }
 
 .matrix-card-body {
   font-size: 12.5px;
   color: var(--ink-secondary);
+  line-height: 1.7;
 }
 
-/* Delivery & Call Cards Grid */
+.matrix-card-body strong {
+  color: var(--ink-primary);
+}
+
+/* ===== Delivery & Call Cards Grid ===== */
 .cards-columns-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
   margin-bottom: 24px;
 }

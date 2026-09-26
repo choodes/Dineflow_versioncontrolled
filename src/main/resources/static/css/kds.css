@@ -1,68 +1,86 @@
 /* ==========================================================================
-   Dineflow Kitchen Display System (KDS) Industrial Dark Theme
+   Dineflow Kitchen Display System (KDS) — Industrial Noir Premium
+   Matte black with urgency-driven neon status indicators
    ========================================================================== */
 
 body.kds-theme {
-  background-color: #121214;
+  background-color: #09090C;
+  background-image: radial-gradient(circle at 50% 0%, #141418 0%, #09090C 70%);
   color: #F0F0F2;
 }
 
 body.kds-theme .app-header {
-  background: #1A1A1E;
-  border-bottom: 1px solid #2A2A30;
+  background: rgba(13, 13, 18, 0.95);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
 }
 
-/* KDS Grid */
+/* ===== KDS Grid ===== */
 .kds-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
 }
 
-/* KDS Order Ticket Card */
+/* ===== KDS Order Ticket Card ===== */
 .kds-ticket {
-  background: #1C1C22;
-  border: 1px solid #2E2E38;
+  background: rgba(20, 20, 26, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.kds-ticket::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
 }
 
 .kds-ticket:hover {
   transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
 }
 
-/* Urgency Thresholds */
+/* ===== Urgency Thresholds ===== */
 .kds-ticket.urgency-normal {
-  border-left: 6px solid #38A169;
+  border-left: 5px solid #68D391;
 }
 
 .kds-ticket.urgency-warning {
-  border-left: 6px solid #D69E2E;
+  border-left: 5px solid #ECC94B;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(236, 201, 75, 0.08);
 }
 
 .kds-ticket.urgency-rush {
-  border-left: 6px solid #E53E3E;
-  animation: rushBlink 1.6s infinite ease-in-out;
+  border-left: 5px solid #FC8181;
+  animation: rushGlow 2s infinite ease-in-out;
 }
 
-@keyframes rushBlink {
-  0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(229, 62, 62, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
+@keyframes rushGlow {
+  0%, 100% { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(252, 129, 129, 0.15); }
+  50% { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 20px rgba(252, 129, 129, 0.3), 0 0 40px rgba(252, 129, 129, 0.08); }
 }
 
+/* ===== Ticket Header ===== */
 .kds-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #2B2B36;
-  padding-bottom: 10px;
-  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .kds-order-num {
@@ -70,34 +88,35 @@ body.kds-theme .app-header {
   font-size: 17px;
   font-weight: 700;
   color: #FFFFFF;
+  letter-spacing: 0.02em;
 }
 
 .kds-timer-badge {
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
-  background: #2A2A36;
-  color: #CBD5E0;
+  background: rgba(255, 255, 255, 0.06);
+  color: #A0AEC0;
 }
 
 .kds-ticket.urgency-normal .kds-timer-badge {
-  background: rgba(56, 161, 105, 0.2);
+  background: rgba(104, 211, 145, 0.12);
   color: #68D391;
 }
 
 .kds-ticket.urgency-warning .kds-timer-badge {
-  background: rgba(214, 158, 46, 0.2);
-  color: #F6E05E;
+  background: rgba(236, 201, 75, 0.12);
+  color: #ECC94B;
 }
 
 .kds-ticket.urgency-rush .kds-timer-badge {
-  background: rgba(229, 62, 62, 0.25);
+  background: rgba(252, 129, 129, 0.15);
   color: #FC8181;
 }
 
-/* Checklist Items */
+/* ===== Checklist Items ===== */
 .kds-item-list {
   list-style: none;
   padding: 0;
@@ -109,28 +128,35 @@ body.kds-theme .app-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 6px;
-  border-bottom: 1px solid #262630;
+  padding: 9px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   cursor: pointer;
   user-select: none;
-  transition: opacity var(--transition-fast);
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-xs);
+  margin-bottom: 2px;
 }
 
 .kds-item-row:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(212, 175, 55, 0.06);
 }
 
 .kds-item-row.completed {
-  opacity: 0.4;
+  opacity: 0.35;
   text-decoration: line-through;
+  text-decoration-color: rgba(104, 211, 145, 0.5);
+}
+
+.kds-item-row.completed .kds-item-qty {
+  color: #68D391;
 }
 
 .kds-item-qty {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 15px;
-  color: #63B3ED;
-  min-width: 24px;
+  color: var(--brand-gold);
+  min-width: 28px;
 }
 
 .kds-item-name {
@@ -139,11 +165,11 @@ body.kds-theme .app-header {
   font-weight: 500;
 }
 
-/* KDS Actions */
+/* ===== KDS Actions ===== */
 .kds-actions {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .kds-actions .ui-btn {

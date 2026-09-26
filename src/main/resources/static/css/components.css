@@ -1,22 +1,26 @@
 /* ==========================================================================
-   Dineflow UI Components (Buttons, Cards, Badges, Modals, Forms)
+   Dineflow UI Components — Noir Luxury Glass Aesthetic
+   Buttons, Cards, Badges, Modals, Forms, Tables
    ========================================================================== */
 
-/* Cards */
+/* ===== Glass Cards ===== */
 .ui-card {
-  background: var(--surface-card);
-  border: 1px solid var(--border-line);
+  background: rgba(19, 19, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius-md);
   padding: 18px;
   margin-bottom: 14px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  backdrop-filter: blur(12px);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
 .ui-card:hover {
-  box-shadow: var(--shadow-md);
+  border-color: rgba(212, 175, 55, 0.2);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 12px rgba(212, 175, 55, 0.08);
 }
 
+/* Layout helpers */
 .flex-between {
   display: flex;
   justify-content: space-between;
@@ -36,15 +40,15 @@
   gap: 10px;
 }
 
-/* Buttons */
+/* ===== Buttons ===== */
 .ui-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--brand-charcoal);
-  color: var(--ink-inverse);
-  border: none;
+  background: rgba(25, 25, 32, 0.9);
+  color: var(--ink-primary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-sm);
   padding: 10px 18px;
   font-weight: 600;
@@ -54,6 +58,21 @@
   text-decoration: none;
   transition: all var(--transition-fast);
   line-height: 1.2;
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.ui-btn:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .ui-btn:active {
@@ -61,46 +80,57 @@
 }
 
 .ui-btn:focus-visible {
-  outline: 2px solid var(--border-focus);
+  outline: 2px solid var(--brand-gold);
   outline-offset: 2px;
 }
 
 .ui-btn.secondary {
   background: transparent;
-  border: 1px solid var(--border-line);
-  color: var(--ink-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--ink-secondary);
 }
 
 .ui-btn.secondary:hover {
-  background: var(--surface-subtle);
-  border-color: var(--ink-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(212, 175, 55, 0.3);
+  color: var(--ink-primary);
 }
 
 .ui-btn.paprika {
-  background: var(--brand-paprika);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, var(--brand-gold) 0%, #C5A059 100%);
+  color: #09090C;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.3);
 }
 
 .ui-btn.paprika:hover {
-  background: var(--brand-paprika-hover);
+  background: linear-gradient(135deg, var(--brand-gold-hover) 0%, #B08A40 100%);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.45);
+  transform: translateY(-1px);
 }
 
 .ui-btn.herb {
-  background: var(--brand-herb);
+  background: linear-gradient(135deg, #38A169 0%, #2F855A 100%);
   color: #FFFFFF;
+  border: none;
+  box-shadow: 0 2px 12px rgba(56, 161, 105, 0.25);
 }
 
 .ui-btn.herb:hover {
-  background: var(--brand-herb-hover);
+  background: linear-gradient(135deg, #2F855A 0%, #276749 100%);
+  box-shadow: 0 6px 20px rgba(56, 161, 105, 0.35);
+  transform: translateY(-1px);
 }
 
 .ui-btn.stone {
-  background: var(--ink-muted);
-  color: #FFFFFF;
+  background: rgba(107, 107, 123, 0.3);
+  color: var(--ink-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .ui-btn.stone:hover {
-  background: var(--ink-secondary);
+  background: rgba(107, 107, 123, 0.5);
 }
 
 .ui-btn.small {
@@ -114,12 +144,12 @@
 }
 
 .ui-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   transform: none !important;
 }
 
-/* Badges */
+/* ===== Status Badges ===== */
 .ui-badge {
   display: inline-flex;
   align-items: center;
@@ -127,54 +157,54 @@
   padding: 3px 10px;
   border-radius: var(--radius-pill);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .ui-badge.placed {
   background: var(--state-placed-bg);
   color: var(--state-placed);
-  border: 1px solid rgba(183, 121, 31, 0.3);
+  border: 1px solid rgba(236, 201, 75, 0.25);
 }
 
 .ui-badge.accepted {
   background: var(--state-accepted-bg);
   color: var(--state-accepted);
-  border: 1px solid rgba(43, 108, 176, 0.3);
+  border: 1px solid rgba(99, 179, 237, 0.25);
 }
 
 .ui-badge.ready {
   background: var(--state-ready-bg);
   color: var(--state-ready);
-  border: 1px solid rgba(39, 103, 73, 0.3);
+  border: 1px solid rgba(104, 211, 145, 0.25);
 }
 
 .ui-badge.served {
   background: var(--state-served-bg);
   color: var(--state-served);
-  border: 1px solid rgba(74, 85, 104, 0.3);
+  border: 1px solid rgba(160, 174, 192, 0.2);
 }
 
 .ui-badge.rejected {
   background: var(--state-rejected-bg);
   color: var(--state-rejected);
-  border: 1px solid rgba(155, 44, 44, 0.3);
+  border: 1px solid rgba(252, 129, 129, 0.25);
 }
 
 .ui-badge.open {
-  background: #FFF5F5;
-  color: #C53030;
-  border: 1px solid #FEB2B2;
+  background: rgba(252, 129, 129, 0.12);
+  color: #FC8181;
+  border: 1px solid rgba(252, 129, 129, 0.25);
 }
 
 .ui-badge.attending {
-  background: #EBF8FF;
-  color: #2B6CB0;
-  border: 1px solid #BEE3F8;
+  background: rgba(99, 179, 237, 0.12);
+  color: #63B3ED;
+  border: 1px solid rgba(99, 179, 237, 0.25);
 }
 
-/* Dietary Markers (Indian Hospitality Standard) */
+/* ===== Dietary Markers (Indian Hospitality Standard) ===== */
 .diet-marker {
   display: inline-flex;
   align-items: center;
@@ -186,7 +216,7 @@
 }
 
 .diet-marker.veg {
-  border: 1.5px solid #276749;
+  border: 1.5px solid #68D391;
 }
 
 .diet-marker.veg::after {
@@ -194,11 +224,11 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #276749;
+  background: #68D391;
 }
 
 .diet-marker.non-veg {
-  border: 1.5px solid #9B2C2C;
+  border: 1.5px solid #FC8181;
 }
 
 .diet-marker.non-veg::after {
@@ -207,43 +237,47 @@
   height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-bottom: 7px solid #9B2C2C;
+  border-bottom: 7px solid #FC8181;
 }
 
-/* Prices */
+/* ===== Prices ===== */
 .price-tag {
   font-family: var(--font-mono);
-  color: var(--brand-paprika);
+  color: var(--brand-gold);
   font-weight: 600;
   font-size: 15px;
   letter-spacing: -0.01em;
 }
 
-/* Forms & Inputs */
+/* ===== Forms & Inputs ===== */
 input, select, textarea {
   padding: 10px 14px;
-  border: 1.5px solid var(--border-line);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-sm);
   font-size: 14px;
   font-family: var(--font-sans);
-  background: var(--surface-card);
+  background: rgba(13, 13, 18, 0.8);
   color: var(--ink-primary);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--ink-primary);
-  box-shadow: 0 0 0 3px rgba(28, 26, 23, 0.1);
+input::placeholder, textarea::placeholder {
+  color: var(--ink-muted);
 }
 
-/* Modals */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--brand-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18), 0 0 16px rgba(212, 175, 55, 0.08);
+}
+
+/* ===== Modals — Premium Glass Overlay ===== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: var(--surface-overlay);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(4, 4, 6, 0.85);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
   display: none;
   align-items: flex-end;
   justify-content: center;
@@ -263,21 +297,23 @@ input:focus, select:focus, textarea:focus {
 }
 
 .modal-content {
-  background: var(--surface-elevated);
+  background: rgba(21, 21, 27, 0.96);
+  border: 1px solid rgba(212, 175, 55, 0.15);
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  padding: 26px 24px 34px;
+  padding: 28px 24px 34px;
   max-width: 500px;
   width: 100%;
   max-height: 88vh;
   overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-  animation: modalSlideUp 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(212, 175, 55, 0.06);
+  animation: modalSlideUp 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(20px);
 }
 
 @media (min-width: 600px) {
   .modal-content {
     border-radius: var(--radius-lg);
-    animation: modalPop 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: modalPop 250ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
@@ -295,16 +331,18 @@ input:focus, select:focus, textarea:focus {
   margin: 0 0 6px;
   font-size: 20px;
   font-weight: 600;
+  color: var(--ink-primary);
 }
 
-/* Data Tables */
+/* ===== Data Tables — Premium Dark Glass ===== */
 .ui-table-wrap {
-  background: var(--surface-card);
-  border: 1px solid var(--border-line);
+  background: rgba(19, 19, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   margin-top: 14px;
+  backdrop-filter: blur(8px);
 }
 
 .ui-table {
@@ -314,19 +352,19 @@ input:focus, select:focus, textarea:focus {
 }
 
 .ui-table th {
-  background: var(--surface-subtle);
+  background: rgba(25, 25, 35, 0.9);
   padding: 12px 14px;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--ink-secondary);
+  color: var(--brand-gold);
   font-weight: 700;
-  border-bottom: 1px solid var(--border-line);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
 }
 
 .ui-table td {
   padding: 12px 14px;
-  border-bottom: 1px solid var(--border-line);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   font-size: 13.5px;
   color: var(--ink-primary);
 }
@@ -336,7 +374,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .ui-table tbody tr:hover {
-  background: rgba(240, 233, 216, 0.5);
+  background: rgba(212, 175, 55, 0.04);
 }
 
 .ui-table tbody tr:last-child td {
